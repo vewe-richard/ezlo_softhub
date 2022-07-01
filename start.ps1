@@ -99,8 +99,9 @@ function AssignDeviceName ([string]$device)
 {  
     For ($i=0; $i -lt 5; $i=$i+1 ){ 
         $usbCreatTime = wsl exec stat -c "%X" /dev/ttyUSB$i  2> $null
-        if ( $usbCreatTime -isnot [int] )
-        {
+        try {
+            [int]$usbCreatTime
+        } catch {
             Write-Host "Can not get /dev/ttyUSB$i"
             continue
         }
