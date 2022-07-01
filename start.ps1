@@ -104,7 +104,6 @@ function AssignDeviceName ([string]$device)
             Write-Host "Can not get /dev/ttyUSB$i"
             continue
         }
-        {
         If ($usbCreatTime -gt $nowTime) {
             echo "-$device=/dev/ttyUSB$i" 
             Write-Host "-$device=/dev/ttyUSB$i" 
@@ -125,5 +124,6 @@ catch {
 
 $script:zwaveDevice = attach zwave
 $script:zigbeeDevice = attach zigbee
-echo "docker run --net host -v /var/run/docker.sock:/var/run/docker.sock --restart=always --name orchestrator-vhubzz us-east4-docker.pkg.dev/softhub-354014/softhub/orchestrator-vhubzz:$script:version /root/orchestrator vhub -start -option $script:option $script:username  $script:password $script:email $script:zigbeeDevice $script:zwaveDevice"
+Set-PSDebug -Trace 1
 docker run --net host -v /var/run/docker.sock:/var/run/docker.sock --restart=always --name orchestrator-vhubzz us-east4-docker.pkg.dev/softhub-354014/softhub/orchestrator-vhubzz:$script:version /root/orchestrator vhub -start -option $script:option $script:username  $script:password $script:email $script:zigbeeDevice $script:zwaveDevice
+Set-PSDebug -Trace 0
