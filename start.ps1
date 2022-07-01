@@ -1,3 +1,11 @@
+
+$var1 = ""
+while ([string]$var1.ToUpper() -ne "Y")
+{
+   $var1 = Read-Host "Docker Desktop have been installed, you need open 'Docker Desktop' from Windows Menu to accept terms.`nPress Y to continue" 
+}
+exits
+
 $script:version ="0.6.1"
 Try  
 {  
@@ -6,7 +14,10 @@ Try
 catch  
 {  
      winget install "Docker Desktop"
-     Read-Host "Docker Desktop have been installed, you need open 'Docker Desktop' from Windows Menu to accept terms.`nThen press enter to continue" 
+     while
+       $var1 = Read-Host "Docker Desktop have been installed, you need open 'Docker Desktop' from Windows Menu to accept terms.`nThen press enter to continue" 
+       if $var == "y":
+         break
 }
 
 $script:checkUbuntu = wsl -l -q|Where {$_.Replace("`0","") -match '^Ubuntu'}
