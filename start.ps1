@@ -124,6 +124,5 @@ catch {
 
 $script:zwaveDevice = attach zwave
 $script:zigbeeDevice = attach zigbee
-Set-PSDebug -Trace 1
+echo docker run --net host -v /var/run/docker.sock:/var/run/docker.sock --restart=always --name orchestrator-vhubzz us-east4-docker.pkg.dev/softhub-354014/softhub/orchestrator-vhubzz:$script:version /root/orchestrator vhub -start -option $script:option $script:username  $script:password $script:email $script:zigbeeDevice $script:zwaveDevice
 docker run --net host -v /var/run/docker.sock:/var/run/docker.sock --restart=always --name orchestrator-vhubzz us-east4-docker.pkg.dev/softhub-354014/softhub/orchestrator-vhubzz:$script:version /root/orchestrator vhub -start -option $script:option $script:username  $script:password $script:email $script:zigbeeDevice $script:zwaveDevice
-Set-PSDebug -Trace 0
