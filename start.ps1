@@ -13,6 +13,16 @@ catch
     }
 }
 
+Try  
+{  
+    docker --version
+}  
+catch
+{
+    echo "Docker is not installed properly"
+    exit
+}
+
 $script:checkUbuntu = wsl -l -q|Where {$_.Replace("`0","") -match '^Ubuntu'}
 If($script:checkUbuntu -eq "Ubuntu")
 {
@@ -29,7 +39,7 @@ Try
 }  
 catch  
 {  
-     winget install --interactive --exact dorssel.usbipd-win
+    winget install --interactive --exact dorssel.usbipd-win
 }
 
 $script:email = ""
@@ -89,6 +99,12 @@ function AssignDeviceName ([string]$device)
 {  
     For ($i=0; $i -lt 5; $i=$i+1 ){ 
         $usbCreatTime = wsl exec stat -c "%X" /dev/ttyUSB$i  2> $null
+        if ( $usbCreatTime -isnot [int] )
+        {
+            Write-Host "Can not get /dev/ttyUSB$i"
+            continue
+        }
+        {
         If ($usbCreatTime -gt $nowTime) {
             echo "-$device=/dev/ttyUSB$i" 
             Write-Host "-$device=/dev/ttyUSB$i" 
@@ -99,7 +115,14 @@ function AssignDeviceName ([string]$device)
 
 docker stop orchestrator-vhubzz  2> $null
 docker rm orchestrator-vhubzz 2> $null
-ubuntu run -d
+Try{
+    ubuntu run -d
+}
+catch {
+    echo "Failed to start ubuntu"
+    exit
+}
+
 $script:zwaveDevice = attach zwave
 $script:zigbeeDevice = attach zigbee
 echo "docker run --net host -v /var/run/docker.sock:/var/run/docker.sock --restart=always --name orchestrator-vhubzz us-east4-docker.pkg.dev/softhub-354014/softhub/orchestrator-vhubzz:$script:version /root/orchestrator vhub -start -option $script:option $script:username  $script:password $script:email $script:zigbeeDevice $script:zwaveDevice"
