@@ -1,4 +1,4 @@
-$script:version ="0.6.1"
+$script:version ="0.6.4"
 Try  
 {  
     docker --version
