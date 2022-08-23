@@ -1,4 +1,4 @@
-cript:version ="0.8.11"
+$script:version ="0.8.11"
 Try  
 {  
     docker --version
