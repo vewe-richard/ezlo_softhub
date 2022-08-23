@@ -1,26 +1,52 @@
-$script:version ="0.7.3"
+$script:version ="0.8.11"
 Try  
 {  
     docker --version
 }  
 catch  
 {  
-    winget install "Docker Desktop"
-    $var1 = ""
-    while ([string]$var1.ToUpper() -ne "Y")
-    {
-        $var1 = Read-Host "Docker Desktop have been installed, you need open 'Docker Desktop' from Windows Menu to accept terms.`nPress Y to continue" 
-    }
+    Invoke-WebRequest -Uri "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" -Outfile "\Downloads\Docker Desktop Installer.exe"
+    Start-Process "\Downloads\Docker Desktop Installer.exe" -wait "install","--quiet","--accept-license"
 }
 
 Try  
 {  
-    docker --version
+    & "\Program Files\Docker\Docker\Docker Desktop.exe"
 }  
-catch
+catch  
+{  
+    $var1 = ""
+    while ([string]$var1.ToUpper() -ne "Y")
+    {
+        $var1 = Read-Host " Failed to run "Docker Desktop.exe" automatically. Please run it manually.`nPress Y to continue" 
+    }
+}
+
+function checkDockerStatus
 {
-    echo "Docker is not installed properly"
-    exit
+    $script:checkDockerStatus= Get-Process -Name docke?| Select-String docker
+
+    If($script:checkDockerStatus -match "docker")
+    {
+         echo "docker is runing"
+         break
+    }
+    else
+    {
+         echo "docker is starting"
+         Start-Sleep -s 1 
+    }
+}
+for($i=0;$i -lt 10; $i++)   
+{   
+    checkDockerStatus
+    Start-Sleep -s 1
+    if ($i -eq 9)
+        {
+            echo "start docker timeout"
+            exit
+        }
+    
 }
 
 $script:checkUbuntu = wsl -l -q|Where {$_.Replace("`0","") -match '^Ubuntu'}
@@ -39,7 +65,8 @@ Try
 }  
 catch  
 {  
-    winget install --interactive --exact dorssel.usbipd-win
+    Invoke-WebRequest -uri https://github.com/dorssel/usbipd-win/releases/download/v2.3.0/usbipd-win_2.3.0.msi  -Outfile "\Downloads\usbipd-win_2.3.0.msi"
+    Start-Process "\Downloads\usbipd-win_2.3.0.msi" /quiet
 }
 
 $script:email = ""
