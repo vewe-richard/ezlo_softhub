@@ -4,9 +4,29 @@ Try
     docker --version
 }  
 catch  
-{  
+{   
+    echo "Docker is not detected. Docker Desktop is to be installed"
+    $var1 = ""
+    while ([string]$var1.ToUpper() -ne "Y")
+    {
+        $var1 = Read-Host "BIOS-level hardware virtualization support must be enabled in the BIOS settings.`nFor more information, see https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html.`nIf it's already open press Y to continue" 
+    }
+    echo "Opening Windows-Subsystem-Linux"
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    echo "Opening VirtualMachinePlatform"
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    echo "Downloading wsl-2"
+    Invoke-WebRequest -Uri " https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" -Outfile "$HOME\wsl_update_x64.msi"
+    echo "Installing wsl-2"
+    Start-Process "$HOME\wsl_update_x64.msi"  -wait /quiet
+    Start-Sleep -s 1 
+    wsl --set-default-version 2
+    echo "Downloading Docker-Desktop-Installer.exe"
     Invoke-WebRequest -Uri "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" -Outfile "$HOME\Docker-Desktop-Installer.exe"
+    echo "Installing Docker-Desktop"
     Start-Process "$HOME\Docker-Desktop-Installer.exe" -wait "install","--quiet","--accept-license"
+    ehco "Please restart your computer and re-run the command"
+    exit
 }
 
 Try  
@@ -15,10 +35,10 @@ Try
 }  
 catch  
 {  
-    $var1 = ""
-    while ([string]$var1.ToUpper() -ne "Y")
+    $var2 = ""
+    while ([string]$var2.ToUpper() -ne "Y")
     {
-        $var1 = Read-Host " Failed to run "Docker Desktop.exe" automatically. Please run it manually.`nPress Y to continue" 
+        $var2 = Read-Host " Failed to run "Docker Desktop.exe" automatically. Please run it manually.`nPress Y to continue" 
     }
 }
 
@@ -37,11 +57,11 @@ function checkDockerStatus
          Start-Sleep -s 1 
     }
 }
-for($i=0;$i -lt 10; $i++)   
+for($i=0;$i -lt 15; $i++)   
 {   
     checkDockerStatus
     Start-Sleep -s 1
-    if ($i -eq 9)
+    if ($i -eq 14)
         {
             echo "start docker timeout"
             exit
@@ -66,7 +86,7 @@ Try
 catch  
 {  
     Invoke-WebRequest -uri https://github.com/dorssel/usbipd-win/releases/download/v2.3.0/usbipd-win_2.3.0.msi  -Outfile "$HOME\usbipd-win_2.3.0.msi"
-    Start-Process "$HOME\usbipd-win_2.3.0.msi" /quiet
+    Start-Process "$HOME\usbipd-win_2.3.0.msi"  -wait /quiet
 }
 
 $script:email = ""
