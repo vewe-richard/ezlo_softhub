@@ -9,7 +9,7 @@ catch
     $var1 = ""
     while ([string]$var1.ToUpper() -ne "Y")
     {
-        $var1 = Read-Host "BIOS-level hardware virtualization support must be enabled in the BIOS settings.`nFor more information, see https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html.`nIf it's already open press Y to continue" 
+        $var1 = Read-Host "BIOS-level hardware virtualization support must be enabled in the BIOS settings.`nCheck whether virtualization is enabled, see https://docs.docker.com/desktop/images/virtualization-enabled.png`nEnable the virtualization mode, see https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html`nIf it's already open press Y to continue" 
     }
     echo "Opening Windows-Subsystem-Linux"
     dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
