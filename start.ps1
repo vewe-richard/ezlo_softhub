@@ -12,7 +12,8 @@ catch
         $var1 = Read-Host "BIOS-level hardware virtualization support must be enabled in the BIOS settings.`nCheck whether virtualization is enabled, see https://docs.docker.com/desktop/images/virtualization-enabled.png`nEnable the virtualization mode, see https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html`nIf it's already open press Y to continue" 
     }
     echo "Opening Windows-Subsystem-Linux"
-    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    echo "If you are running this script for the first time,please select Restart"
+    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
     echo "Opening VirtualMachinePlatform"
     dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
     echo "Downloading wsl-2"
@@ -21,7 +22,7 @@ catch
     Start-Process "$HOME\wsl_update_x64.msi"  -wait /quiet
     Start-Sleep -s 1 
     wsl --set-default-version 2
-    echo "Downloading Docker-Desktop-Installer.exe"
+    echo "Downloading Docker-Desktop-Installer.exe . This process takes about 20 minutes"
     Invoke-WebRequest -Uri "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" -Outfile "$HOME\Docker-Desktop-Installer.exe"
     echo "Installing Docker-Desktop"
     Start-Process "$HOME\Docker-Desktop-Installer.exe" -wait "install","--quiet","--accept-license"
@@ -63,7 +64,8 @@ for($i=0;$i -lt 15; $i++)
     Start-Sleep -s 1
     if ($i -eq 14)
         {
-            echo "start docker timeout"
+            echo "Start docker timeout"
+            echo "You may need to log out"
             exit
         }
     
