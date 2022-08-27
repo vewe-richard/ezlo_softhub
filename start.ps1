@@ -26,7 +26,7 @@ catch
     Invoke-WebRequest -Uri "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" -Outfile "$HOME\Docker-Desktop-Installer.exe"
     echo "Installing Docker-Desktop"
     Start-Process "$HOME\Docker-Desktop-Installer.exe" -wait "install","--quiet","--accept-license"
-    ehco "Please restart your computer and re-run the command"
+    echo "Please restart your computer and re-run the command"
     exit
 }
 
